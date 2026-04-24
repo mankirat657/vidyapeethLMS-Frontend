@@ -1,0 +1,244 @@
+/* Overlay */
+.delete-qa-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: deleteQaFadeIn 0.2s ease-out;
+}
+
+@keyframes deleteQaFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Container */
+.delete-qa-container {
+  background: white;
+  border-radius: 24px;
+  width: 90%;
+  max-width: 500px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  animation: deleteQaScaleIn 0.3s ease-out;
+  overflow: hidden;
+}
+
+@keyframes deleteQaScaleIn {
+  from {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Header */
+.delete-qa-header {
+  padding: 24px 24px 0 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.delete-qa-icon-wrapper {
+  width: 56px;
+  height: 56px;
+  background: #fee2e2;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #dc2626;
+  animation: deleteQaShake 0.5s ease-in-out;
+}
+
+@keyframes deleteQaShake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-5px);
+  }
+  75% {
+    transform: translateX(5px);
+  }
+}
+
+.delete-qa-close {
+  background: #f3f4f6;
+  border: none;
+  border-radius: 12px;
+  padding: 8px;
+  cursor: pointer;
+  color: #6b7280;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.delete-qa-close:hover {
+  background: #e5e7eb;
+  color: #1f2937;
+  transform: rotate(90deg);
+}
+
+/* Body */
+.delete-qa-body {
+  padding: 24px;
+}
+
+.delete-qa-title {
+  font-size: 24px;
+  font-weight: 700;
+  color: #1f2937;
+  margin: 0 0 16px 0;
+}
+
+.delete-qa-warning-box {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  background: #fef3c7;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  color: #d97706;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.delete-qa-message {
+  font-size: 16px;
+  color: #4b5563;
+  line-height: 1.5;
+  margin-bottom: 20px;
+}
+
+/* Question Preview */
+.delete-qa-question-preview {
+  background: #f9fafb;
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 20px;
+  border: 1px solid #e5e7eb;
+}
+
+.delete-qa-preview-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #6b7280;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.delete-qa-question-text {
+  font-size: 14px;
+  font-weight: 500;
+  color: #1f2937;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.delete-qa-warning-note {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  background: #f3f4f6;
+  border-radius: 10px;
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.delete-qa-footer {
+  padding: 16px 24px 24px 24px;
+  display: flex;
+  gap: 12px;
+  border-top: 1px solid #f0f0f0;
+}
+
+.delete-qa-cancel-btn {
+  flex: 1;
+  padding: 12px 20px;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  color: #6b7280;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.delete-qa-cancel-btn:hover {
+  background: #f3f4f6;
+  border-color: #d1d5db;
+  color: #374151;
+}
+
+.delete-qa-delete-btn {
+  flex: 1;
+  padding: 12px 20px;
+  background: #dc2626;
+  border: none;
+  border-radius: 12px;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.2s;
+}
+
+.delete-qa-delete-btn:hover {
+  background: #b91c1c;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+}
+
+.delete-qa-delete-btn:active {
+  transform: translateY(0);
+}
+
+@media (max-width: 640px) {
+  .delete-qa-container {
+    width: 95%;
+    margin: 16px;
+  }
+
+  .delete-qa-title {
+    font-size: 20px;
+  }
+
+  .delete-qa-message {
+    font-size: 14px;
+  }
+
+  .delete-qa-footer {
+    flex-direction: column;
+  }
+
+  .delete-qa-cancel-btn,
+  .delete-qa-delete-btn {
+    width: 100%;
+  }
+}

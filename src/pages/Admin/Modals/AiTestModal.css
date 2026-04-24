@@ -1,0 +1,501 @@
+.aitest-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.aitest-modal-container {
+  background: white;
+  border-radius: 24px;
+  width: 90%;
+  max-width: 550px;
+  animation: aitestScaleIn 0.3s ease-out;
+}
+
+@keyframes aitestScaleIn {
+  from {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.aitest-modal-header {
+  padding: 24px 24px 16px;
+  text-align: center;
+  position: relative;
+}
+
+.aitest-header-icon {
+  width: 56px;
+  height: 56px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 12px;
+  color: white;
+}
+
+.aitest-modal-title {
+  font-size: 22px;
+  font-weight: 700;
+  margin: 0;
+  color: #1f2937;
+}
+
+.aitest-close-btn {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: #f3f4f6;
+  color: black;
+  border: none;
+  border-radius: 10px;
+  padding: 6px;
+  cursor: pointer;
+}
+.aitest-close-btn:hover{
+    color: white;
+}
+.aitest-modal-body {
+  padding: 0 24px;
+}
+
+.aitest-modal-subtitle {
+  font-size: 14px;
+  color: #6b7280;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.aitest-prompt-container {
+  background: #f9fafb;
+  border-radius: 16px;
+  padding: 16px;
+}
+
+.aitest-prompt-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #667eea;
+  margin-bottom: 12px;
+}
+
+.aitest-prompt-input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  font-size: 14px;
+  font-family: inherit;
+  resize: vertical;
+}
+
+.aitest-prompt-input:focus {
+  outline: none;
+  border-color: #667eea;
+}
+
+.aitest-prompt-hint {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+  font-size: 12px;
+  color: #9ca3af;
+}
+
+.aitest-modal-footer {
+  padding: 24px;
+  display: flex;
+  gap: 12px;
+}
+
+.aitest-cancel-btn {
+  flex: 1;
+  padding: 10px;
+  background: white;
+  color: black;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  cursor: pointer;
+}
+.aitest-cancel-btn:hover{
+    color: white;
+}
+.aitest-generate-btn {
+  flex: 1;
+  padding: 10px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.aitest-spinner {
+  animation: aitestSpin 0.6s linear infinite;
+}
+
+@keyframes aitestSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.aitest-prompt-hint kbd {
+  display: inline-block;
+  padding: 2px 6px;
+  background: #f3f4f6;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #374151;
+  font-family: monospace;
+  margin: 0 2px;
+}
+
+.aitest-generate-btn.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.aitest-generate-btn.disabled:hover {
+  transform: none;
+  box-shadow: none;
+}
+
+.aitest-prompt-input:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+/* Robot Animation Overlay */
+.aitest-robot-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  border-radius: 24px;
+  animation: aitestFadeIn 0.3s ease-out;
+}
+
+@keyframes aitestFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.aitest-robot-animation {
+  text-align: center;
+  padding: 20px;
+}
+
+/* Robot Head */
+.aitest-robot-head {
+  position: relative;
+  width: 100px;
+  height: 100px;
+  background: linear-gradient(135deg, #ffffff 0%, #f0f0f0 100%);
+  border-radius: 25px;
+  margin: 0 auto;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  animation: aitestFloat 2s ease-in-out infinite;
+}
+
+@keyframes aitestFloat {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+/* Robot Eyes */
+.aitest-robot-eyes {
+  position: absolute;
+  top: 30px;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+.aitest-robot-eye {
+  width: 16px;
+  height: 16px;
+  background: #4f39f6;
+  border-radius: 50%;
+  animation: aitestBlink 3s infinite;
+}
+
+.aitest-robot-eye.left {
+  animation-delay: 0s;
+}
+
+.aitest-robot-eye.right {
+  animation-delay: 0.2s;
+}
+
+@keyframes aitestBlink {
+  0%, 90%, 100% {
+    height: 16px;
+    opacity: 1;
+  }
+  95% {
+    height: 2px;
+    opacity: 0.3;
+  }
+}
+
+/* Robot Mouth */
+.aitest-robot-mouth {
+  position: absolute;
+  bottom: 25px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 35px;
+  height: 10px;
+  background: rgba(79, 57, 246, 0.3);
+  border-radius: 5px;
+  animation: aitestTalk 1s ease-in-out infinite;
+}
+
+.aitest-robot-teeth {
+  position: absolute;
+  top: -5px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 25px;
+  height: 5px;
+  background: #4f39f6;
+  border-radius: 2px;
+}
+
+@keyframes aitestTalk {
+  0%, 100% {
+    width: 35px;
+  }
+  50% {
+    width: 45px;
+  }
+}
+
+/* Robot Antenna */
+.aitest-robot-antenna {
+  position: absolute;
+  top: -25px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 5px;
+  height: 25px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 3px;
+}
+
+.aitest-antenna-signal {
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 10px;
+  height: 10px;
+  background: #f59e0b;
+  border-radius: 50%;
+  animation: aitestSignal 1s ease-in-out infinite;
+}
+
+@keyframes aitestSignal {
+  0%, 100% {
+    transform: translateX(-50%) scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: translateX(-50%) scale(1.5);
+    opacity: 0.5;
+  }
+}
+
+/* Robot Body */
+.aitest-robot-body {
+  width: 70px;
+  height: 70px;
+  background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+  border-radius: 20px;
+  margin: -15px auto 0;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+}
+
+.aitest-robot-heart {
+  color: white;
+  animation: aitestHeartBeat 1s ease-in-out infinite;
+}
+
+@keyframes aitestHeartBeat {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+}
+
+/* Robot Arms */
+.aitest-robot-arms {
+  position: absolute;
+  top: 130px;
+  left: 0;
+  right: 0;
+  width: 100%;
+  height: 60px;
+}
+
+.aitest-arm {
+  position: absolute;
+  width: 18px;
+  height: 45px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 10px;
+  top: 0;
+}
+
+.left-arm {
+  left: -35px;
+  transform: rotate(-30deg);
+  transform-origin: top center;
+  animation: aitestWave 2s ease-in-out infinite;
+}
+
+.right-arm {
+  right: -35px;
+  transform: rotate(30deg);
+  transform-origin: top center;
+  animation: aitestWave 2s ease-in-out infinite reverse;
+}
+
+@keyframes aitestWave {
+  0%, 100% {
+    transform: rotate(-30deg);
+  }
+  50% {
+    transform: rotate(-10deg);
+  }
+}
+
+/* Robot Message */
+.aitest-robot-message {
+  margin-top: 30px;
+  animation: aitestFadeInUp 0.5s ease-out;
+}
+
+@keyframes aitestFadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.aitest-robot-message h3 {
+  font-size: 18px;
+  font-weight: 700;
+  color: white;
+  margin-bottom: 8px;
+}
+
+.aitest-robot-message p {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 16px;
+}
+
+.aitest-robot-dots {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+}
+
+.aitest-robot-dots span {
+  width: 10px;
+  height: 10px;
+  background: white;
+  border-radius: 50%;
+  animation: aitestDotPulse 1.4s ease-in-out infinite;
+}
+
+.aitest-robot-dots span:nth-child(1) {
+  animation-delay: 0s;
+}
+
+.aitest-robot-dots span:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.aitest-robot-dots span:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes aitestDotPulse {
+  0%, 60%, 100% {
+    transform: scale(1);
+    opacity: 0.5;
+  }
+  30% {
+    transform: scale(1.5);
+    opacity: 1;
+  }
+}
+
+/* Make modal container position relative for overlay */
+.aitest-modal-container {
+  position: relative;
+  overflow: hidden;
+}
+
+/* Disabled input styling */
+.aitest-prompt-input:disabled {
+  background: #f3f4f6;
+  cursor: not-allowed;
+  opacity: 0.7;
+}

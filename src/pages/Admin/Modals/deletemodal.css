@@ -1,0 +1,186 @@
+/* Delete Subject Modal - Overlay */
+.dsm-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: dsmFadeIn 0.2s ease-out;
+}
+
+@keyframes dsmFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Delete Subject Modal - Container */
+.dsm-container {
+  background: white;
+  border-radius: 16px;
+  width: 90%;
+  max-width: 500px;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  animation: dsmScaleIn 0.2s ease-out;
+}
+
+@keyframes dsmScaleIn {
+  from {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Delete Subject Modal - Header */
+.dsm-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 24px 0 24px;
+}
+
+.dsm-icon-wrapper {
+  width: 48px;
+  height: 48px;
+  background-color: #fee2e2;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #dc2626;
+  font-size: 24px;
+}
+
+.dsm-close-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #9ca3af;
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  border-radius: 8px;
+  transition: all 0.2s;
+}
+
+.dsm-close-btn:hover {
+  background-color: #f3f4f6;
+  color: #374151;
+}
+
+/* Delete Subject Modal - Body */
+.dsm-body {
+  padding: 20px 24px;
+}
+
+.dsm-title {
+  font-size: 24px;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 12px;
+}
+
+.dsm-message {
+  font-size: 16px;
+  color: #4b5563;
+  line-height: 1.5;
+  margin-bottom: 12px;
+}
+
+.dsm-message strong {
+  color: #dc2626;
+  font-weight: 600;
+}
+
+.dsm-warning-text {
+  font-size: 14px;
+  color: #6b7280;
+  background-color: #fef3c7;
+  padding: 12px;
+  border-radius: 8px;
+  border-left: 3px solid #f59e0b;
+  margin-top: 16px;
+}
+
+/* Delete Subject Modal - Footer */
+.dsm-footer {
+  display: flex;
+  gap: 12px;
+  padding: 0 24px 24px 24px;
+}
+
+.dsm-btn {
+  flex: 1;
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.dsm-btn-cancel {
+  background-color: #f3f4f6;
+  color: #374151;
+}
+
+.dsm-btn-cancel:hover {
+  background-color: #e5e7eb;
+}
+
+.dsm-btn-delete {
+  background-color: #dc2626;
+  color: white;
+}
+
+.dsm-btn-delete:hover {
+  background-color: #b91c1c;
+}
+
+.dsm-btn:active {
+  transform: scale(0.98);
+}
+
+/* Delete Subject Modal - Responsive */
+@media (max-width: 640px) {
+  .dsm-container {
+    width: 95%;
+    margin: 20px;
+  }
+
+  .dsm-title {
+    font-size: 20px;
+  }
+
+  .dsm-message {
+    font-size: 14px;
+  }
+
+  .dsm-footer {
+    flex-direction: column;
+  }
+
+  .dsm-btn {
+    padding: 10px 16px;
+  }
+}

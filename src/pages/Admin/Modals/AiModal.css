@@ -1,0 +1,604 @@
+/* Overlay */
+.ai-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: aiFadeIn 0.2s ease-out;
+}
+
+@keyframes aiFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Container */
+.ai-modal-container {
+  background: #ffffff;
+  border-radius: 24px;
+  width: 90%;
+  max-width: 650px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+  animation: aiScaleIn 0.3s ease-out;
+  border: 1px solid #e5e7eb;
+}
+
+@keyframes aiScaleIn {
+  from {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Header */
+.ai-modal-header {
+  padding: 24px 24px 16px 24px;
+  border-bottom: 1px solid #f0f0f0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.ai-header-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.ai-header-icon {
+  width: 48px;
+  height: 48px;
+  background: linear-gradient(135deg, #005eff 0%, #000a2f 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  animation: aiPulse 2s infinite;
+}
+
+@keyframes aiPulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(11, 15, 245, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 0 8px rgba(11, 62, 245, 0);
+  }
+}
+
+.ai-modal-title {
+  font-size: 22px;
+  font-weight: 700;
+  margin: 0;
+  color: #1f2937;
+}
+
+.ai-modal-subtitle {
+  font-size: 14px;
+  color: #6b7280;
+  margin: 4px 0 0 0;
+}
+
+.ai-close-btn {
+  background: #f3f4f6;
+  border: none;
+  border-radius: 12px;
+  padding: 8px;
+  cursor: pointer;
+  color: #6b7280;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.ai-close-btn:hover {
+  background: #e5e7eb;
+  color: #1f2937;
+  transform: rotate(90deg);
+}
+
+/* Body */
+.ai-modal-body {
+  padding: 24px;
+}
+
+.ai-prompt-container {
+  background: #f9fafb;
+  border-radius: 16px;
+  padding: 20px;
+  border: 1px solid #e5e7eb;
+  margin-bottom: 24px;
+}
+
+.ai-prompt-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+  color: #0b61f5;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.ai-prompt-input {
+  width: 100%;
+  padding: 14px;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  color: #1f2937;
+  font-size: 14px;
+  font-family: inherit;
+  resize: vertical;
+  transition: all 0.3s;
+}
+
+.ai-prompt-input:focus {
+  outline: none;
+  border-color: #0b61f5;
+  box-shadow: 0 0 0 3px rgba(11, 73, 245, 0.1);
+}
+
+.ai-prompt-input::placeholder {
+  color: #9ca3af;
+}
+
+.ai-prompt-hint {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 12px;
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.ai-prompt-hint kbd {
+  background: #f3f4f6;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  padding: 2px 6px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #374151;
+}
+
+/* Examples Section */
+.ai-examples {
+  margin-top: 16px;
+}
+
+.ai-examples-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #6b7280;
+  margin-bottom: 12px;
+}
+
+.ai-examples-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.ai-example-btn {
+  padding: 8px 16px;
+  background: #f3f4f6;
+  border: 1px solid #e5e7eb;
+  border-radius: 20px;
+  font-size: 13px;
+  color: #374151;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.ai-example-btn:hover {
+  background: #c7cdfe;
+  border-color: #0b61f5;
+  color: #0629d9;
+  transform: translateY(-1px);
+}
+
+/* Footer */
+.ai-modal-footer {
+  padding: 16px 24px 24px 24px;
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  border-top: 1px solid #f0f0f0;
+}
+
+.ai-cancel-btn {
+  padding: 10px 20px;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  color: #6b7280;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.ai-cancel-btn:hover {
+  background: #f3f4f6;
+  border-color: #d1d5db;
+  color: #374151;
+}
+
+.ai-submit-btn {
+  padding: 10px 24px;
+  background: linear-gradient(135deg, #0b61f5 0%, #000877 100%);
+  border: none;
+  border-radius: 12px;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s;
+}
+
+.ai-submit-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(245, 158, 11, 0.3);
+}
+
+.ai-submit-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.ai-spinner {
+  animation: aiSpin 0.6s linear infinite;
+}
+
+@keyframes aiSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .ai-modal-container {
+    width: 95%;
+    margin: 16px;
+  }
+
+  .ai-modal-header {
+    flex-direction: column;
+    text-align: center;
+    gap: 16px;
+  }
+
+  .ai-header-left {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .ai-modal-title {
+    font-size: 20px;
+  }
+
+  .ai-modal-footer {
+    flex-direction: column;
+  }
+
+  .ai-cancel-btn,
+  .ai-submit-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .ai-examples-list {
+    flex-direction: column;
+  }
+
+  .ai-example-btn {
+    width: 100%;
+  }
+}
+/* Robot Animation Styles */
+.ai-generating-container {
+  text-align: center;
+  padding: 20px;
+  animation: aiFadeIn 0.3s ease-out;
+}
+
+.ai-robot-animation {
+  position: relative;
+  width: 150px;
+  height: 180px;
+  margin: 0 auto 30px;
+  animation: aiRobotFloat 2s ease-in-out infinite;
+}
+
+@keyframes aiRobotFloat {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+/* Robot Head */
+.ai-robot-head {
+  position: relative;
+  width: 80px;
+  height: 80px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 20px;
+  margin: 0 auto;
+  animation: aiHeadGlow 2s ease-in-out infinite;
+}
+
+@keyframes aiHeadGlow {
+  0%, 100% {
+    box-shadow: 0 0 5px rgba(102, 126, 234, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(102, 126, 234, 0.8);
+  }
+}
+
+/* Robot Eyes */
+.ai-robot-eyes {
+  position: absolute;
+  top: 25px;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+.ai-robot-eye {
+  width: 12px;
+  height: 12px;
+  background: white;
+  border-radius: 50%;
+  animation: aiBlink 3s infinite;
+}
+
+.ai-robot-eye.left {
+  animation-delay: 0s;
+}
+
+.ai-robot-eye.right {
+  animation-delay: 0.2s;
+}
+
+@keyframes aiBlink {
+  0%, 90%, 100% {
+    height: 12px;
+    opacity: 1;
+  }
+  95% {
+    height: 2px;
+    opacity: 0.3;
+  }
+}
+
+/* Robot Mouth */
+.ai-robot-mouth {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 30px;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 4px;
+  animation: aiTalk 1s ease-in-out infinite;
+}
+
+.ai-robot-teeth {
+  position: absolute;
+  top: -4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 20px;
+  height: 4px;
+  background: white;
+  border-radius: 2px;
+}
+
+@keyframes aiTalk {
+  0%, 100% {
+    width: 30px;
+  }
+  50% {
+    width: 40px;
+  }
+}
+
+/* Robot Antenna */
+.ai-robot-antenna {
+  position: absolute;
+  top: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 4px;
+  height: 20px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 2px;
+}
+
+.ai-antenna-signal {
+  position: absolute;
+  top: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 8px;
+  height: 8px;
+  background: #f59e0b;
+  border-radius: 50%;
+  animation: aiSignal 1s ease-in-out infinite;
+}
+
+@keyframes aiSignal {
+  0%, 100% {
+    transform: translateX(-50%) scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: translateX(-50%) scale(1.5);
+    opacity: 0.5;
+  }
+}
+
+/* Robot Body */
+.ai-robot-body {
+  width: 60px;
+  height: 60px;
+  background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+  border-radius: 15px;
+  margin: -10px auto 0;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ai-robot-heart {
+  color: #f59e0b;
+  animation: aiHeartBeat 1s ease-in-out infinite;
+}
+
+@keyframes aiHeartBeat {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+}
+
+/* Robot Arms */
+.ai-robot-arms {
+  position: absolute;
+  top: 100px;
+  left: 0;
+  right: 0;
+  width: 100%;
+  height: 60px;
+}
+
+.ai-arm {
+  position: absolute;
+  width: 15px;
+  height: 40px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 10px;
+  top: 0;
+}
+
+.left-arm {
+  left: -30px;
+  transform: rotate(-30deg);
+  transform-origin: top center;
+  animation: aiArmWave 2s ease-in-out infinite;
+}
+
+.right-arm {
+  right: -30px;
+  transform: rotate(30deg);
+  transform-origin: top center;
+  animation: aiArmWave 2s ease-in-out infinite reverse;
+}
+
+@keyframes aiArmWave {
+  0%, 100% {
+    transform: rotate(-30deg);
+  }
+  50% {
+    transform: rotate(-10deg);
+  }
+}
+
+/* Generating Text */
+.ai-generating-text {
+  margin-top: 30px;
+}
+
+.ai-generating-text h3 {
+  font-size: 20px;
+  font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 8px;
+}
+
+.ai-generating-text p {
+  font-size: 14px;
+  color: #6b7280;
+  margin-bottom: 16px;
+}
+
+.ai-dots {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+}
+
+.ai-dots span {
+  width: 8px;
+  height: 8px;
+  background: #667eea;
+  border-radius: 50%;
+  animation: aiDotPulse 1.4s ease-in-out infinite;
+}
+
+.ai-dots span:nth-child(1) {
+  animation-delay: 0s;
+}
+
+.ai-dots span:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.ai-dots span:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes aiDotPulse {
+  0%, 60%, 100% {
+    transform: scale(1);
+    opacity: 0.5;
+  }
+  30% {
+    transform: scale(1.5);
+    opacity: 1;
+  }
+}
+
+/* AI Facts */
+.ai-facts {
+  margin-top: 24px;
+  padding: 12px;
+  background: #fef3c7;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 12px;
+  color: #92400e;
+  animation: aiFadeIn 0.5s ease-out;
+}
