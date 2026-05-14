@@ -119,3 +119,30 @@ export const unblockStudentApi = (stuId) => {
         {withCredentials : true}
     )
 }
+export const getAllTestApi = () => {
+    return AxiosInstance.get(
+        `/admin/getAllTest`,
+        {withCredentials : true}
+    )
+}
+export const getAllquestionAnswersApi = () => {
+    return AxiosInstance.get(
+        `/admin/getAllQuestionAnswers`,
+        {withCredentials : true}
+    )
+}
+export const logoutApi = () => {
+    return AxiosInstance.delete(
+        `/logout`,
+        {withCredentials : true}
+    )
+}
+export const getBankDataApi= (subId) => {
+    return AxiosInstance.get(
+        `/knowledgeBank/${subId}`,
+        {withCredentials : true}
+    )
+}
+export const getStudentTestApi = ()=> {
+    
+}

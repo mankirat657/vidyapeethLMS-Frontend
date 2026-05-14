@@ -18,7 +18,7 @@ const CreateTest = () => {
         setSub(subject?.subjects)
     }, [subject])
     console.log(sub);
-    const filteredSubjects = sub.filter((item) => item?.name.toLowerCase().includes(searchTerm.toLowerCase()));
+    const filteredSubjects = Array.isArray(sub) && sub.filter((item) => item?.name.toLowerCase().includes(searchTerm.toLowerCase()));
     console.log(filteredSubjects);
     
     return (

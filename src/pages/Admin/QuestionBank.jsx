@@ -43,7 +43,7 @@ const QuestionBank = () => {
                             <input name='search' onChange={(e) => setSearchSubject(e.target.value)} value={searchSubject} type="text" placeholder='Search the subjects' className='outline-none border border-gray-300 w-[22vw] h-[5vh] rounded-full' style={{ padding: "0 1.5vw" }} />
                         </div>
                     </div>
-                    <div className="subjectWrapper h-[70vh] overflow-y-auto flex items-center gap-4 flex-wrap">
+                    <div className="subjectWrapper h-[70vh] overflow-y-auto justify-start flex  gap-2 flex-wrap">
                         {Array.isArray(filteredSubjects) && filteredSubjects.map((item, index) => (
                             <Subject
                                 key={index}

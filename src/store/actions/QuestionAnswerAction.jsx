@@ -1,6 +1,19 @@
-import { setQuestionAnswer, setLoading,setError } from "../features/questionAnswerSlice";
-import { aiQuestionAnswerCreationApi, createQuestionAnswerApi, deletePdfApi, deleteQuestionAnswersApi, getQuestionAnswersApi, updateQuestionAnswersApi, uploadPdfApi } from "../services/AuthService";
 
+import { setQuestionAnswer, setLoading,setError } from "../features/questionAnswerSlice";
+import { aiQuestionAnswerCreationApi, createQuestionAnswerApi, deletePdfApi, deleteQuestionAnswersApi, getAllquestionAnswersApi, getQuestionAnswersApi, updateQuestionAnswersApi, uploadPdfApi } from "../services/AuthService";
+export const getALlQuestionAnswers = () => async(dispatch) =>{ 
+    try {
+        dispatch(setLoading(true));
+        const res = await getAllquestionAnswersApi();
+        return res.data;
+    } catch (error) {
+        const errMessage = error.response?.data?.message || "Error occured try again later !"
+        dispatch(setError(errMessage))
+        return { error: errMessage };
+    } finally{
+        dispatch(setLoading(false));
+    }
+}
 export const getQuestionAnswerss = (id) => async(dispatch) => {
     try {
         dispatch(setLoading(true));

@@ -4,12 +4,14 @@ import subjectSlice from './features/subjectSlice'
 import questionAnswerSlice from './features/questionAnswerSlice'
 import testSlice from './features/TestSlice'
 import studentSlice from './features/studentSlice'
+import studentBankSlice from './features/studentBankSlice'
 export const store = configureStore({
     reducer : {
         auth : authSlice,
         subject : subjectSlice,
         questionAnswer : questionAnswerSlice,
         test : testSlice,
-        student : studentSlice
+        student : studentSlice,
+        studentBank : studentBankSlice
     }
 })

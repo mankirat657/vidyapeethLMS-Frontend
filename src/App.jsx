@@ -14,6 +14,10 @@ import Material from "./pages/Admin/Material";
 import SubjectTest from "./pages/Admin/SubjectTest";
 import ManageStudentsPage from "./pages/ManageStudentsPage";
 import BlockedPage from "./pages/Admin/BlockedPage";
+import StudentKnowledgeBank from "./pages/StudentKnowledgeBank";
+import StudentViewMaterial from "./components/StudentViewMaterial";
+import StudentTest from "./pages/StudentTest";
+import StartTest from "./components/StartTest";
 
 
 
@@ -33,7 +37,7 @@ function App() {
     <BrowserRouter>
 
       <Routes>
-        {/* Login WITHOUT layout */}\
+        {/* Login WITHOUT layout */}
         <Route path="/auth-success" element={<AuthSuccess />} />
         <Route path="/" element={<Login />} />
         {/* Dashboards */}
@@ -42,8 +46,32 @@ function App() {
         <Route path="/admin/dashboard" element={<AdminRoute user={user}>
           <AdminDashboard />
         </AdminRoute>} />
+        
         <Route path="/student/dashboard" element={<StudentDashboard />} />
-
+        <Route path="/student/tests">
+          <Route
+            index
+            element={<StudentTest />}
+          />
+          <Route 
+            path="startTest"
+            element={<StartTest />}
+          />
+        </Route>
+        <Route path="/student/question-bank">
+         <Route
+            index
+            element={
+              <StudentKnowledgeBank />
+            }
+          />
+           <Route
+            path="materials"
+            element={
+              <StudentViewMaterial />
+            }
+          />
+        </Route>
         <Route path="/admin/question-bank">
 
           <Route

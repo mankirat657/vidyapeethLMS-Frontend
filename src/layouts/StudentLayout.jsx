@@ -1,9 +1,10 @@
 import Sidebar from "../components/Sidebar";
+import StudentSidebar from "../components/StudentSidebar";
 
 function StudentLayout({ children }) {
   return (
     <div className="layout">
-      <Sidebar role="student" />
+      <StudentSidebar role="student" />
       <div className="main-content">
         {children}
       </div>
