@@ -42,7 +42,6 @@ function StudentSidebar() {
     },
   ];
 
-  // Fetch already published tests
   useEffect(() => {
     async function fetchPublishedTests() {
       const res = await dispatch(getAllTest());
