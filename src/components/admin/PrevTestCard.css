@@ -27,6 +27,7 @@
   align-items: center;
   padding: 20px 24px;
   cursor: pointer;
+  gap: 20px;
   background: linear-gradient(135deg, #f8f9ff 0%, #ffffff 100%);
   transition: background 0.2s;
 }

@@ -20,7 +20,7 @@ export const registerUser = (data) => async (dispatch) => {
         dispatch(setLoading(true));
 
         const res = await registerApi(data);
-        dispatch(setUser(res.data.user));
+        dispatch(setUser(res.data.newUser));
 
     } catch (err) {
         const errorMsg = err.response?.data?.message || "Register failed";

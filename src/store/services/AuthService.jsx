@@ -143,6 +143,10 @@ export const getBankDataApi= (subId) => {
         {withCredentials : true}
     )
 }
-export const getStudentTestApi = ()=> {
-    
+export const publishTestApi = (testId) => {
+    return AxiosInstance.post(
+        `/admin/publishTest/${testId}`,
+        {},
+        {withCredentials : true}
+    )
 }

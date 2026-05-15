@@ -1,5 +1,5 @@
 import { setLoading, setTest, seterror } from "../features/TestSlice";
-import { createAiTestApi, createTestApi, getAllTestApi, getPrevTestApi } from "../services/AuthService";
+import { createAiTestApi, createTestApi, getAllTestApi, getPrevTestApi, publishTestApi } from "../services/AuthService";
 
 export const getPrevTest = (id) => async (dispatch) => {
     try {
@@ -58,5 +58,18 @@ export const getAllTest = () => async(dispatch)=>{
         return { error: errMessage };
     }finally{
         dispatch(setLoading(false));
+    }
+}
+export const publishTest = (testId) => async(dispatch)=>{
+    try {
+        dispatch(setLoading(true));
+        const res = await publishTestApi(testId);
+        return res.data;
+    } catch (error) {
+         const errMessage = error.response?.data?.message || "Error occured try again later !"
+        dispatch(seterror(errMessage))
+        return { error: errMessage };
+    }finally{
+        dispatch(setLoading(true));
     }
 }

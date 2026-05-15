@@ -31,7 +31,21 @@ setForm({
 });
 
 }
+useEffect(() => {
+        if (user) {
+            toast.success("Register successful 🎉");
 
+            if (user.role === "admin") {
+                navigate("/admin/dashboard");
+            } else {
+                navigate("/student/dashboard");
+            }
+        }
+
+        if (error) {
+            toast.error(error);
+        }
+    }, [user, error, navigate]);
 function handleRegister(e){
 
 e.preventDefault();

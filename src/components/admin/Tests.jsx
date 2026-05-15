@@ -26,13 +26,12 @@ function Tests() {
   ];
   return (<div className="admin-tests-section">
 
-    {/* 🔥 Ongoing Tests */}
     <h2 className="admin-tests-heading">Ongoing Tests</h2>
     <div className="admin-tests-grid">
       {ongoingTests.map((test, index) => (
         <TestCardAdmin key={index} {...test} status="ongoing" />
       ))}
-    </div>  {/* ⬇️ Upcoming Tests */}
+    </div>  
     <h2 className="admin-tests-heading admin-tests-heading-secondary">
       Upcoming Tests
     </h2>

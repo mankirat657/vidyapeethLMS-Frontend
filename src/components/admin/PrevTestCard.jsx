@@ -16,11 +16,14 @@ import {
   Zap
 } from 'lucide-react';
 import './PrevTestCard.css';
+import { useDispatch } from 'react-redux';
+import { publishTest } from '../../store/actions/TestAction';
+import { toast } from 'react-toastify';
 
 const PrevTestCard = ({ tests }) => {
   const [expandedTestId, setExpandedTestId] = useState(null);
   const [expandedQuestions, setExpandedQuestions] = useState({});
-
+  const dispatch = useDispatch();
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     return date.toLocaleDateString('en-US', {
@@ -56,7 +59,15 @@ const PrevTestCard = ({ tests }) => {
     }
     return answer.isCorrect === true;
   };
-
+  console.log(tests);
+  
+  const handlePublishTest = async(testId) => {
+      const res = await dispatch(publishTest(testId));
+      if(res?.error){
+        toast.error(res?.error || "error occured");
+      }
+      toast.success(res?.message || "test Published successfully");
+  }
   return (
     <div className="prevtest-container">
       {tests?.getTest?.map((test, index) => (
@@ -98,6 +109,9 @@ const PrevTestCard = ({ tests }) => {
                   </span>
                 </div>
               </div>
+            </div>
+            <div className="flex justify-end " onClick={() => handlePublishTest(test._id)}>
+             <button>PublishTest</button>
             </div>
             <div className="prevtest-header-right">
               
@@ -191,8 +205,10 @@ const PrevTestCard = ({ tests }) => {
                         </div>
                       </div>
                     )}
+                   
                   </div>
                 ))}
+                 
               </div>
 
               
