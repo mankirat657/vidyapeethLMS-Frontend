@@ -18,7 +18,7 @@ import StudentKnowledgeBank from "./pages/StudentKnowledgeBank";
 import StudentViewMaterial from "./components/StudentViewMaterial";
 import StudentTest from "./pages/StudentTest";
 import StartTest from "./components/StartTest";
-
+import TestInstructions from "./pages/TestInstructions";
 
 
 function App() {
@@ -48,6 +48,7 @@ function App() {
         </AdminRoute>} />
         
         <Route path="/student/dashboard" element={<StudentDashboard />} />
+        <Route path="/student/test-instructions" element={<TestInstructions />} />
         <Route path="/student/tests">
           <Route
             index
