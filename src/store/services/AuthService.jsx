@@ -150,3 +150,9 @@ export const publishTestApi = (testId) => {
         {withCredentials : true}
     )
 }
+export const deleteTestApi = (testId) => {
+    return AxiosInstance.delete(
+        `/admin/deleteTest/${testId}`,
+        {withCredentials : true}
+    )
+}

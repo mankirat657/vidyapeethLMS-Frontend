@@ -13,16 +13,20 @@ import {
   ChevronDown,
   ChevronUp,
   BookOpen,
-  Zap
+  Zap,
+  Trash
 } from 'lucide-react';
 import './PrevTestCard.css';
 import { useDispatch } from 'react-redux';
 import { publishTest } from '../../store/actions/TestAction';
 import { toast } from 'react-toastify';
+import DeleteTestModal from './DeleteTestModal';
 
 const PrevTestCard = ({ tests }) => {
   const [expandedTestId, setExpandedTestId] = useState(null);
   const [expandedQuestions, setExpandedQuestions] = useState({});
+  const [isDeleteClick,setIsDeleteClicked] = useState(false);
+  const[deleteTestId,setDeleteTestId] = useState(false);
   const dispatch = useDispatch();
   const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -110,9 +114,15 @@ const PrevTestCard = ({ tests }) => {
                 </div>
               </div>
             </div>
-            <div className="flex justify-end " onClick={() => handlePublishTest(test._id)}>
+            {test?.isPublished == false ?  <div className="flex justify-end " onClick={() => handlePublishTest(test._id)}>
              <button>PublishTest</button>
-            </div>
+            </div>: ""}
+            <div onClick={() => {
+              setIsDeleteClicked(true)
+              setDeleteTestId(test._id)
+            }} className="flex items-center gap-4">
+              <Trash size={15} />
+            </div>     
             <div className="prevtest-header-right">
               
               {expandedTestId === test._id ? (
@@ -224,6 +234,7 @@ const PrevTestCard = ({ tests }) => {
           <p>Create your first test to see it here</p>
         </div>
       )}
+      {isDeleteClick && <DeleteTestModal testId={deleteTestId}  setIsDeleteClicked={() => setIsDeleteClicked(false)} />}
     </div>
   );
 };

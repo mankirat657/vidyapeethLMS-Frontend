@@ -7,10 +7,13 @@ import {
   LogOut,
   ChevronRight,
   Bell,
+  X,
+  Calendar,
+  BookOpen
 } from "lucide-react";
 import "./StudentSidebar.css";
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { logoutUser } from "../store/actions/AuthAction";
 import { toast } from "react-toastify";
 import { getAllTest } from "../store/actions/TestAction";
@@ -19,9 +22,10 @@ function StudentSidebar() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { user } = useSelector((state) => state.auth);
-
+  const [isBellClicked, setIsBellClicked] = useState(false);
   const [notifications, setNotifications] = useState([]);
-
+  const notificationRef = useRef(null);
+  const [unreadCount, setUnreadCount] = useState(0);
   const menuItems = [
     {
       to: "/student/dashboard",
@@ -45,24 +49,25 @@ function StudentSidebar() {
   useEffect(() => {
     async function fetchPublishedTests() {
       const res = await dispatch(getAllTest());
-
-      console.log("API Response:", res);
-
       const allTests = res?.test || [];
-
-      console.log("All Tests:", allTests);
-
       const publishedTests = allTests.filter(
-        (test) => test.isPublished === true
+        (test) => test.isPublished === true && test.isFinished !== "true"
       );
-
-      console.log("Published Tests:", publishedTests);
-
       setNotifications(publishedTests);
+      setUnreadCount(publishedTests.length);
     }
-
     fetchPublishedTests();
   }, [dispatch]);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (notificationRef.current && !notificationRef.current.contains(event.target)) {
+        setIsBellClicked(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   useEffect(() => {
     if (!user) return;
@@ -71,29 +76,25 @@ function StudentSidebar() {
 
     socket.on("connect", () => {
       console.log("Socket connected:", socket.id);
-
       socket.emit("join-student-room");
     });
 
     socket.on("connect_error", (err) => {
       console.error("Socket connection error:", err.message);
     });
-     socket.on("disconnect", (reason) => {
-    console.log("Socket disconnected:", reason);
-  });
+
+    socket.on("disconnect", (reason) => {
+      console.log("Socket disconnected:", reason);
+    });
+
     socket.on("testPublished", (newTest) => {
       console.log("Received published test:", newTest);
-
       setNotifications((prev) => {
-        const exists = prev.some(
-          (test) => test._id === newTest._id
-        );
-
+        const exists = prev.some((test) => test._id === newTest._id);
         if (exists) return prev;
-
         return [...prev, newTest];
       });
-
+      setUnreadCount((prev) => prev + 1);
       toast.success("New test has been published!");
     });
 
@@ -107,21 +108,35 @@ function StudentSidebar() {
 
   async function logoutStudent() {
     const res = await dispatch(logoutUser());
-
     if (res?.error) {
       toast.error(res.error);
       return;
     }
-
     toast.success(res?.message || "Logout successfully");
     navigate("/", { replace: true });
   }
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
 
+    return date.toLocaleString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
+    });
+  };
+  const handleBellClick = () => {
+    setIsBellClicked((prev) => !prev);
+
+    setUnreadCount(0);
+  };
   console.log("Notifications:", notifications);
 
   return (
     <div className="student-sidebar">
-      <div className="sidebar-logo">
+      <div className="sidebar-logo ">
         <div className="logo-icon">
           <GraduationCap size={28} />
         </div>
@@ -131,14 +146,57 @@ function StudentSidebar() {
           <span>Portal</span>
         </div>
 
-        <div className="logo-badge relative hover:cursor-pointer">
+        <div className="logo-badge relative hover:cursor-pointer" onClick={handleBellClick}>
           <Bell size={22} />
-
-          <div className="noBadge absolute w-5 h-5 rounded-full bg-red-500 flex items-center justify-center top-[-.5rem] right-[-1rem] text-white text-xs font-bold">
-            {notifications.length}
-          </div>
+          {unreadCount > 0 && (
+            <div className="noBadge absolute w-5 h-5 rounded-full bg-red-500 flex items-center justify-center top-[-0.5rem] right-[-1rem] text-white text-xs font-bold">
+              {unreadCount}
+            </div>
+          )}
         </div>
       </div>
+      {isBellClicked && (
+        <div className="notification-panel" ref={notificationRef}>
+          <div className="notification-header">
+            <div className="notification-header-left">
+              <Bell size={18} />
+              <span>Notifications</span>
+            </div>
+            <button className="notification-close" onClick={() => setIsBellClicked(false)}>
+              <X size={16} />
+            </button>
+          </div>
+
+          <div className="notification-list">
+            {notifications.length > 0 ? (
+              notifications.reverse().map((notification, index) => (
+                <div key={notification._id || index} className="notification-item">
+                  <div className="notification-icon">
+                    <BookOpen size={16} />
+                  </div>
+                  <div className="notification-content">
+                    <div className="notification-title">
+                      New Test Published: {notification.subject?.name}
+                    </div>
+                    <div className="notification-meta">
+                      <Calendar size={12} />
+                      <span>{formatDate(notification.createdAt)}</span>
+                    </div>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <div className="notification-empty">
+                <Bell size={32} />
+                <p>No new notifications</p>
+              </div>
+            )}
+          </div>
+
+        </div>
+      )}
+
+
 
       <div className="sidebar-divider"></div>
 

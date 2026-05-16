@@ -18,6 +18,7 @@ import StudentKnowledgeBank from "./pages/StudentKnowledgeBank";
 import StudentViewMaterial from "./components/StudentViewMaterial";
 import StudentTest from "./pages/StudentTest";
 import StartTest from "./components/StartTest";
+import TestPage from "./pages/TestPage";
 
 
 
@@ -43,6 +44,7 @@ function App() {
         {/* Dashboards */}
         <Route path="/student/exam" element={<ExamPage />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/student/test-attempt" element={<TestPage />} />
         <Route path="/admin/dashboard" element={<AdminRoute user={user}>
           <AdminDashboard />
         </AdminRoute>} />

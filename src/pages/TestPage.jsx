@@ -1,55 +1,161 @@
 import { useState, useEffect } from "react";
-import StudentSidebar from "../components/StudentSidebar";
+import {
+  Clock,
+  ChevronLeft,
+  ChevronRight,
+  Send,
+  CheckCircle,
+  Circle,
+  AlertCircle,
+  BookOpen,
+  HelpCircle,
+  Flag,
+  FileText,
+  CheckSquare,
+  Square
+} from "lucide-react";
+import "./TestPage.css";
+import { toast } from "react-toastify";
+import { useLocation } from "react-router-dom";
 
 function TestPage() {
-
-  const questions = [
-    {
-      id: 1,
-      type: "mcq",
-      question: "What is React?",
-      options: ["Library", "Framework", "Database", "Language"]
-    },
-    {
-      id: 2,
-      type: "truefalse",
-      question: "React is a backend framework."
-    },
-    {
-      id: 3,
-      type: "short",
-      question: "Explain Virtual DOM."
-    },
-    {
-      id: 4,
-      type: "long",
-      question: "Explain React component lifecycle."
-    }
-  ];
-
+  const location = useLocation();
+  const data = location.state;
+  console.log("Full data:", data);
+  const questionss = data?.questions || [];
+  console.log("Questions:", questionss);
+  
+  const [violations, setViolations] = useState(0);
   const [current, setCurrent] = useState(0);
   const [answers, setAnswers] = useState({});
-  const [timeLeft, setTimeLeft] = useState(3600);
+  const [timeLeft, setTimeLeft] = useState(0);
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [examStarted, setExamStarted] = useState(false);
+  
+  const enterFullScreen = async () => {
+    try {
+      const element = document.documentElement;
 
+      if (element.requestFullscreen) {
+        await element.requestFullscreen();
+      } else if (element.webkitRequestFullscreen) {
+        element.webkitRequestFullscreen();
+      } else if (element.msRequestFullscreen) {
+        element.msRequestFullscreen();
+      }
+    } catch (error) {
+      console.error("Failed to enter fullscreen:", error);
+      toast.error("Please allow fullscreen mode to start the test.");
+    }
+  };
+  
+  const startExam = async () => {
+    await enterFullScreen();
+    setExamStarted(true);
+  };
+  
   useEffect(() => {
-    const timer = setInterval(() => {
-      setTimeLeft((prev) => prev - 1);
-    }, 1000);
+    if (!examStarted) return;
 
-    return () => clearInterval(timer);
-  }, []);
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        setViolations((prev) => prev + 1);
+        toast.warn("Tab switching detected");
+      }
+    };
+
+    const handleBlur = () => {
+      setViolations((prev) => prev + 1);
+      toast.info("Window lost focus!");
+    };
+
+    const handleFullScreenChange = () => {
+      if (!document.fullscreenElement) {
+        setViolations((prev) => prev + 1);
+        toast.warning("You exited fullscreen");
+      }
+    };
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    window.addEventListener("blur", handleBlur);
+    document.addEventListener("fullscreenchange", handleFullScreenChange);
+
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+      window.removeEventListener("blur", handleBlur);
+      document.removeEventListener("fullscreenchange", handleFullScreenChange);
+    };
+  }, [examStarted]);
+  
+  useEffect(() => {
+    if (violations >= 3) {
+      toast.warning("Too many violations. Test submitted automatically");
+      handleAutoSubmit();
+    }
+  }, [violations]);
+  
+ useEffect(() => {
+  if (!examStarted || !data?.endTime) return;
+
+  const updateTimer = () => {
+    const now = new Date().getTime();
+    const end = new Date(data.endTime).getTime();
+
+    const remaining = Math.max(
+      0,
+      Math.floor((end - now) / 1000)
+    );
+
+    setTimeLeft(remaining);
+
+    if (remaining === 0 && !isSubmitted) {
+      handleAutoSubmit();
+    }
+  };
+
+  updateTimer();
+
+  const timer = setInterval(updateTimer, 1000);
+
+  return () => clearInterval(timer);
+}, [examStarted, data?.endTime, isSubmitted]);
+
+  const formatTime = (seconds) => {
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    const secs = seconds % 60;
+    if (hours > 0) {
+      return `${hours}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    }
+    return `${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+  };
+
+  const getTimeColor = () => {
+    if (timeLeft < 300) return "critical";
+    if (timeLeft < 600) return "warning";
+    return "normal";
+  };
 
   const handleAnswer = (value) => {
     setAnswers({
       ...answers,
-      [questions[current].id]: value
+      [questionss[current]?._id]: value
     });
   };
 
-  const question = questions[current];
+  const handleMCQAnswer = (option) => {
+    setAnswers({
+      ...answers,
+      [questionss[current]?._id]: option
+    });
+  };
+
+  const question = questionss[current];
+  const attemptedCount = Object.keys(answers).length;
+  const progress = (attemptedCount / questionss.length) * 100;
 
   const nextQuestion = () => {
-    if (current < questions.length - 1) {
+    if (current < questionss.length - 1) {
       setCurrent(current + 1);
     }
   };
@@ -60,144 +166,269 @@ function TestPage() {
     }
   };
 
-  const submitTest = () => {
-    console.log("Submitted answers:", answers);
-    alert("Test Submitted!");
+  const handleAutoSubmit = () => {
+    if (!isSubmitted) {
+      setIsSubmitted(true);
+      console.log("Auto-submitted answers:", answers);
+      toast.info("Time's up! Test submitted automatically.");
+    }
   };
 
+  const submitTest = () => {
+    if (window.confirm("Are you sure you want to submit your test?")) {
+      setIsSubmitted(true);
+      console.log("Submitted answers:", answers);
+      toast.success("Test Submitted Successfully!");
+    }
+  };
+
+  const getQuestionIcon = (type) => {
+    switch (type) {
+      case "Multiple_Choice": return <CheckSquare size={16} />;
+      case "True_False": return <HelpCircle size={16} />;
+      case "Short_Answer": return <FileText size={16} />;
+      case "Long_Answer": return <BookOpen size={16} />;
+      default: return <Circle size={16} />;
+    }
+  };
+
+  const getQuestionTypeDisplay = (type) => {
+    switch (type) {
+      case "Multiple_Choice": return "Multiple Choice";
+      case "True_False": return "True / False";
+      case "Short_Answer": return "Short Answer";
+      case "Long_Answer": return "Long Answer";
+      default: return type;
+    }
+  };
+  
+  if (!examStarted) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gray-100">
+        <button
+          onClick={startExam}
+          className="px-8 py-4 bg-blue-600 text-white rounded-lg text-xl font-semibold hover:bg-blue-700"
+        >
+          Start Test in Full Screen
+        </button>
+      </div>
+    );
+  }
+  
+  if (!questionss || questionss.length === 0) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gray-100">
+        <div className="text-center">
+          <AlertCircle size={48} className="mx-auto text-red-500 mb-4" />
+          <h2 className="text-xl font-semibold">No questions available</h2>
+          <p className="text-gray-600">Please contact your instructor.</p>
+        </div>
+      </div>
+    );
+  }
+  
   return (
-    <div className="layout">
-
-      <StudentSidebar />
-
-      <div className="main-content">
-
-        <div className="test-header">
-          <h2>React Midterm Test</h2>
-
-          <div className="timer">
-            {Math.floor(timeLeft / 60)}:
-            {String(timeLeft % 60).padStart(2, "0")}
+    <div className="testpage-container">
+      <div className="testpage-header">
+        <div className="testpage-header-left">
+          <div className="testpage-header-icon">
+            <BookOpen size={28} />
+          </div>
+          <div>
+            <h1 className="testpage-title">{data?.subject?.name || "Examination"}</h1>
+            <p className="testpage-subtitle">{data?.subject?.description || "Test your knowledge"}</p>
           </div>
         </div>
+        <div className={`testpage-timer ${getTimeColor()}`}>
+          <Clock size={20} />
+          <span>{formatTime(timeLeft)}</span>
+        </div>
+      </div>
 
-        <div className="test-layout">
+      {/* Progress Bar */}
+      <div className="testpage-progress-section">
+        <div className="testpage-progress-info">
+          <span>Overall Progress</span>
+          <span>{attemptedCount} / {questionss.length} Completed</span>
+        </div>
+        <div className="testpage-progress-bar">
+          <div className="testpage-progress-fill" style={{ width: `${progress}%` }} />
+        </div>
+      </div>
 
-          {/* LEFT SIDE QUESTIONS */}
+      <div className="testpage-main">
+        <div className="testpage-sidebar">
+          <div className="testpage-sidebar-header">
+            <h3>Question Navigator</h3>
+            <span className="testpage-attempt-badge">
+              <CheckCircle size={14} />
+              {attemptedCount} Attempted
+            </span>
+          </div>
 
-          <div className="test-container">
+          <div className="testpage-question-grid">
+            {questionss.map((q, index) => {
+              let status = "unanswered";
+              if (index === current) status = "current";
+              else if (answers[q._id]) status = "answered";
 
-            <h3>
-              Question {current + 1} / {questions.length}
-            </h3>
+              return (
+                <button
+                  key={q._id}
+                  className={`testpage-q-btn ${status}`}
+                  onClick={() => setCurrent(index)}
+                >
+                  <span className="q-number">{index + 1}</span>
+                  {status === "answered" && <CheckCircle size={12} className="q-status-icon" />}
+                  {status === "current" && <Flag size={12} className="q-status-icon" />}
+                </button>
+              );
+            })}
+          </div>
 
-            <p className="question-text">{question.question}</p>
+          <div className="testpage-stats">
+            <div className="testpage-stat-item">
+              <div className="stat-dot answered"></div>
+              <span>Answered</span>
+              <strong>{attemptedCount}</strong>
+            </div>
+            <div className="testpage-stat-item">
+              <div className="stat-dot unanswered"></div>
+              <span>Unanswered</span>
+              <strong>{questionss.length - attemptedCount}</strong>
+            </div>
+            <div className="testpage-stat-item">
+              <div className="stat-dot current"></div>
+              <span>Current</span>
+              <strong>1</strong>
+            </div>
+          </div>
 
-            {question.type === "mcq" && (
-              <div className="options">
-                {question.options.map((opt, index) => (
-                  <label key={index}>
+          <button className="testpage-submit-btn" onClick={submitTest}>
+            <Send size={18} />
+            Submit Test
+          </button>
+        </div>
+
+        <div className="testpage-question-area">
+          <div className="testpage-question-card">
+            <div className="testpage-question-header">
+              <div className="testpage-question-badge">
+                {getQuestionIcon(question.questionType)}
+                <span>{getQuestionTypeDisplay(question.questionType)}</span>
+              </div>
+              <div className="testpage-question-marks">
+                <Flag size={14} />
+                <span>{question.totalMarks || 0} marks</span>
+              </div>
+            </div>
+
+            <div className="testpage-question-text">
+              <span className="testpage-q-symbol">Q{current + 1}.</span>
+              <span>{question.questionText}</span>
+            </div>
+
+            {question.questionType === "Multiple_Choice" && question.answers && (
+              <div className="testpage-options">
+                {question.answers.map((opt, idx) => (
+                  <label
+                    key={idx}
+                    className={`testpage-option ${answers[question._id] === opt.answerText ? "selected" : ""}`}
+                  >
                     <input
                       type="radio"
-                      name="option"
-                      onChange={() => handleAnswer(opt)}
+                      name={`mcq-${question._id}`}
+                      value={opt.answerText}
+                      checked={answers[question._id] === opt.answerText}
+                      onChange={() => handleMCQAnswer(opt.answerText)}
                     />
-                    {opt}
+                    <div className="testpage-option-content">
+                      <span className="testpage-option-letter">{String.fromCharCode(65 + idx)}</span>
+                      <span className="testpage-option-text">{opt.answerText}</span>
+                      {answers[question._id] === opt.answerText && <CheckCircle size={16} className="check-icon" />}
+                    </div>
                   </label>
                 ))}
               </div>
             )}
 
-            {question.type === "truefalse" && (
-              <div className="options">
-                <label>
+            {question.questionType === "True_False" && (
+              <div className="testpage-tf-options">
+                <label className={`testpage-tf-option ${answers[question._id] === "True" ? "selected" : ""}`}>
                   <input
                     type="radio"
-                    name="tf"
+                    name={`tf-${question._id}`}
+                    value="True"
+                    checked={answers[question._id] === "True"}
                     onChange={() => handleAnswer("True")}
                   />
-                  True
+                  <div className="tf-content">
+                    <span className="tf-badge true">T</span>
+                    <span>True</span>
+                  </div>
                 </label>
-
-                <label>
+                <label className={`testpage-tf-option ${answers[question._id] === "False" ? "selected" : ""}`}>
                   <input
                     type="radio"
-                    name="tf"
+                    name={`tf-${question._id}`}
+                    value="False"
+                    checked={answers[question._id] === "False"}
                     onChange={() => handleAnswer("False")}
                   />
-                  False
+                  <div className="tf-content">
+                    <span className="tf-badge false">F</span>
+                    <span>False</span>
+                  </div>
                 </label>
               </div>
             )}
 
-            {question.type === "short" && (
-              <input
-                className="short-answer"
-                placeholder="Write your answer"
-                onChange={(e) => handleAnswer(e.target.value)}
-              />
-            )}
-
-            {question.type === "long" && (
+            {(question.questionType === "Short_Answer" || question.questionType === "Long_Answer") && (
               <textarea
-                className="long-answer"
-                placeholder="Write detailed answer"
+                className={question.questionType === "Short_Answer" ? "testpage-short-answer" : "testpage-long-answer"}
+                placeholder={question.questionType === "Short_Answer" ? "Write your answer here..." : "Provide a detailed answer with examples..."}
+                value={answers[question._id] || ""}
                 onChange={(e) => handleAnswer(e.target.value)}
+                rows={question.questionType === "Short_Answer" ? 4 : 8}
               />
             )}
 
-            <div className="test-nav">
+            <div className="testpage-nav">
+              <button
+                className="testpage-nav-prev"
+                onClick={prevQuestion}
+                disabled={current === 0}
+              >
+                <ChevronLeft size={18} />
+                Previous
+              </button>
 
-              <button onClick={prevQuestion}>Previous</button>
+              <div className="testpage-question-status">
+                {answers[question._id] ? (
+                  <><CheckCircle size={14} /> Answered</>
+                ) : (
+                  <><AlertCircle size={14} /> Not Answered</>
+                )}
+              </div>
 
-              {current === questions.length - 1 ? (
-                <button className="btn-primary" onClick={submitTest}>
-                  Submit Test
+              {current === questionss.length - 1 ? (
+                <button className="testpage-submit" onClick={submitTest}>
+                  Submit
+                  <Send size={18} />
                 </button>
               ) : (
-                <button className="btn-primary" onClick={nextQuestion}>
+                <button
+                  className="testpage-nav-next"
+                  onClick={nextQuestion}
+                >
                   Next
+                  <ChevronRight size={18} />
                 </button>
               )}
-
             </div>
-
           </div>
-
-          {/* RIGHT SIDE NAVIGATOR */}
-
-          <div className="question-panel">
-
-            <h4>Questions</h4>
-
-            <div className="question-grid">
-
-              {questions.map((q, index) => {
-
-                let status = "";
-
-                if (index === current) status = "current";
-                else if (answers[q.id]) status = "answered";
-
-                return (
-                  <div
-                    key={q.id}
-                    className={`q-number ${status}`}
-                    onClick={() => setCurrent(index)}
-                  >
-                    {index + 1}
-                  </div>
-                );
-              })}
-
-            </div>
-
-          </div>
-
         </div>
-
       </div>
-
     </div>
   );
 }

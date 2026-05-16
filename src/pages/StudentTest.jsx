@@ -2,10 +2,10 @@ import React, { useEffect, useState } from 'react';
 import StudentLayout from '../layouts/StudentLayout';
 import { useDispatch, useSelector } from 'react-redux';
 import { getAllTest } from '../store/actions/TestAction';
-import { 
-  FileText, 
-  Clock, 
-  Calendar, 
+import {
+  FileText,
+  Clock,
+  Calendar,
   Award,
   BookOpen,
   Layers,
@@ -21,12 +21,13 @@ import {
 } from 'lucide-react';
 import './StudentTest.css';
 import { Link } from 'react-router-dom';
-
+import socket from "../socket/socket";
+import { toast } from 'react-toastify';
 const StudentTest = () => {
   const dispatch = useDispatch();
   const { tests } = useSelector(state => state.test);
   const [isLoading, setIsLoading] = useState(true);
-
+  const { user } = useSelector((state) => state.auth);
   useEffect(() => {
     const fetchTests = async () => {
       setIsLoading(true);
@@ -37,7 +38,40 @@ const StudentTest = () => {
     fetchTests();
   }, [dispatch]);
   console.log(tests);
-  
+  useEffect(() => {
+    if (!user) return;
+
+    socket.connect();
+
+    socket.on("connect", () => {
+      console.log("Socket connected:", socket.id);
+      socket.emit("join-student-room");
+    });
+
+    socket.on("connect_error", (err) => {
+      console.error("Socket connection error:", err.message);
+    });
+
+    socket.on("disconnect", (reason) => {
+      console.log("Socket disconnected:", reason);
+    });
+
+    socket.on("testPublished", async(newTest) => {
+      console.log("Received published test:", newTest);
+
+      toast.success("New test has been published!");
+      await dispatch(getAllTest());
+    });
+
+    return () => {
+      socket.off("connect");
+      socket.off("connect_error");
+      socket.off("testPublished");
+      socket.disconnect();
+    };
+  }, [user]);
+
+
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     return date.toLocaleDateString('en-US', {
@@ -67,15 +101,16 @@ const StudentTest = () => {
     return questions.filter(q => q.questionType === 'Long_Answers').length;
   };
 
-  // Helper function to check if test is finished (handles string "true"/"false")
   const isTestFinished = (test) => {
     return test?.isFinished === "true" || test?.isFinished === true;
   };
+  const filteredTest = (tests?.test || []).filter(
+    (item) => item?.isPublished === true
+  );
 
   return (
     <StudentLayout>
       <div className="stutest-container">
-        {/* Header */}
         <div className="stutest-header">
           <div className="stutest-header-content">
             <div className="stutest-header-icon">
@@ -88,7 +123,6 @@ const StudentTest = () => {
           </div>
         </div>
 
-        {/* Stats Overview */}
         <div className="stutest-stats">
           <div className="stutest-stat-card">
             <div className="stutest-stat-icon blue">
@@ -119,14 +153,12 @@ const StudentTest = () => {
           </div>
         </div>
 
-        {/* Tests Grid */}
         <div className="stutest-grid">
           {!isLoading && tests?.test?.length > 0 ? (
-            tests.test.map((test, index) => {
+            filteredTest.reverse().map((test, index) => {
               const isFinished = isTestFinished(test);
               return (
                 <div key={test._id} className={`stutest-card ${isFinished ? 'finished' : ''}`}>
-                  {/* Card Header */}
                   <div className="stutest-card-header">
                     <div className="stutest-card-icon">
                       <BookOpen size={28} />
@@ -151,7 +183,7 @@ const StudentTest = () => {
                     <h3 className="stutest-subject-name">
                       {test.subject?.name || 'Unknown Subject'}
                     </h3>
-                    
+
                     <div className="stutest-subject-code">
                       <Award size={14} />
                       <span>Code: {test.subject?.subjectCode || 'N/A'}</span>
@@ -196,25 +228,25 @@ const StudentTest = () => {
 
                   <div className="stutest-card-footer">
                     <Link to={!isFinished && "/student/tests/startTest"} state={test}>
-                    <button
-                      className={`stutest-start-btn ${isFinished ? 'disabled' : ''}`}
-                      disabled={isFinished}
-                     
-                    >
-                      {isFinished ? (
-                        <>
-                          <Lock size={18} />
-                          Test Closed
-                        </>
-                      ) : (
-                        <>
-                          <PlayCircle size={18} />
-                          Start Test
-                          <ChevronRight size={18} />
-                        </>
-                      )}
-                    </button>
-                      </Link>
+                      <button
+                        className={`stutest-start-btn ${isFinished ? 'disabled' : ''}`}
+                        disabled={isFinished}
+
+                      >
+                        {isFinished ? (
+                          <>
+                            <Lock size={18} />
+                            Test Closed
+                          </>
+                        ) : (
+                          <>
+                            <PlayCircle size={18} />
+                            Start Test
+                            <ChevronRight size={18} />
+                          </>
+                        )}
+                      </button>
+                    </Link>
                   </div>
                 </div>
               );
