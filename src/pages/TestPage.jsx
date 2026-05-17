@@ -17,21 +17,22 @@ import {
 import "./TestPage.css";
 import { toast } from "react-toastify";
 import { useLocation } from "react-router-dom";
-
+import { useDispatch } from 'react-redux';
+import { validateTest } from "../store/actions/resultAction";
+import { startTest } from "../store/actions/TestAction";
 function TestPage() {
   const location = useLocation();
   const data = location.state;
-  console.log("Full data:", data);
-  const questionss = data?.questions || [];
-  console.log("Questions:", questionss);
-  
+  const dispatch = useDispatch()
+    const questionss = data?.questions || [];
+
   const [violations, setViolations] = useState(0);
   const [current, setCurrent] = useState(0);
   const [answers, setAnswers] = useState({});
   const [timeLeft, setTimeLeft] = useState(0);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [examStarted, setExamStarted] = useState(false);
-  
+
   const enterFullScreen = async () => {
     try {
       const element = document.documentElement;
@@ -48,12 +49,47 @@ function TestPage() {
       toast.error("Please allow fullscreen mode to start the test.");
     }
   };
-  
+  const submitAnswers = async () => {
+    try {
+      setIsSubmitted(true);
+
+      const formattedAnswers =
+        formatAnswersForSubmission();
+
+      const result = await dispatch(
+        validateTest(
+          data._id,
+          data.subject._id,
+          formattedAnswers 
+        )
+      );
+
+      if (result?.error) {
+        setIsSubmitted(false);
+        toast.error(result.error);
+        return;
+      }
+
+      toast.success(
+        `Test submitted successfully! Score: ${result.score}`
+      );
+
+      console.log("Result ID:", result.resultId);
+    } catch (error) {
+      setIsSubmitted(false);
+      toast.error("Failed to submit test");
+    }
+  };
   const startExam = async () => {
     await enterFullScreen();
+    const res = await dispatch(startTest(data?._id));
+    if (res?.error) {
+      toast.error(res?.error || "Error Occured");
+    }
     setExamStarted(true);
+    toast.success(res?.message || "exam started successfully");
   };
-  
+
   useEffect(() => {
     if (!examStarted) return;
 
@@ -86,39 +122,39 @@ function TestPage() {
       document.removeEventListener("fullscreenchange", handleFullScreenChange);
     };
   }, [examStarted]);
-  
+
   useEffect(() => {
     if (violations >= 3) {
       toast.warning("Too many violations. Test submitted automatically");
       handleAutoSubmit();
     }
   }, [violations]);
-  
- useEffect(() => {
-  if (!examStarted || !data?.endTime) return;
 
-  const updateTimer = () => {
-    const now = new Date().getTime();
-    const end = new Date(data.endTime).getTime();
+  useEffect(() => {
+    if (!examStarted || !data?.endTime) return;
 
-    const remaining = Math.max(
-      0,
-      Math.floor((end - now) / 1000)
-    );
+    const updateTimer = () => {
+      const now = new Date().getTime();
+      const end = new Date(data.endTime).getTime();
 
-    setTimeLeft(remaining);
+      const remaining = Math.max(
+        0,
+        Math.floor((end - now) / 1000)
+      );
 
-    if (remaining === 0 && !isSubmitted) {
-      handleAutoSubmit();
-    }
-  };
+      setTimeLeft(remaining);
 
-  updateTimer();
+      if (remaining === 0 && !isSubmitted) {
+        handleAutoSubmit();
+      }
+    };
 
-  const timer = setInterval(updateTimer, 1000);
+    updateTimer();
 
-  return () => clearInterval(timer);
-}, [examStarted, data?.endTime, isSubmitted]);
+    const timer = setInterval(updateTimer, 1000);
+
+    return () => clearInterval(timer);
+  }, [examStarted, data?.endTime, isSubmitted]);
 
   const formatTime = (seconds) => {
     const hours = Math.floor(seconds / 3600);
@@ -166,20 +202,23 @@ function TestPage() {
     }
   };
 
-  const handleAutoSubmit = () => {
-    if (!isSubmitted) {
-      setIsSubmitted(true);
-      console.log("Auto-submitted answers:", answers);
-      toast.info("Time's up! Test submitted automatically.");
-    }
+  const handleAutoSubmit = async () => {
+    if (isSubmitted) return;
+
+    toast.info("Time's up! Submitting test...");
+    await submitAnswers();
   };
 
-  const submitTest = () => {
-    if (window.confirm("Are you sure you want to submit your test?")) {
-      setIsSubmitted(true);
-      console.log("Submitted answers:", answers);
-      toast.success("Test Submitted Successfully!");
+  const submitTest = async () => {
+    if (
+      !window.confirm(
+        "Are you sure you want to submit your test?"
+      )
+    ) {
+      return;
     }
+
+    await submitAnswers();
   };
 
   const getQuestionIcon = (type) => {
@@ -201,7 +240,7 @@ function TestPage() {
       default: return type;
     }
   };
-  
+
   if (!examStarted) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-gray-100">
@@ -214,7 +253,7 @@ function TestPage() {
       </div>
     );
   }
-  
+
   if (!questionss || questionss.length === 0) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-gray-100">
@@ -226,7 +265,38 @@ function TestPage() {
       </div>
     );
   }
-  
+  const formatAnswersForSubmission = () => {
+    return Object.entries(answers).map(
+      ([questionId, answerValue]) => {
+        const question = questionss.find(
+          (q) => q._id === questionId
+        );
+
+        if (!question) return null;
+
+        if (
+          question.questionType === "Multiple_Choice" ||
+          question.questionType === "True_False"
+        ) {
+          const selectedOptionIndex =
+            question.answers.findIndex(
+              (option) =>
+                option.answerText === answerValue
+            );
+
+          return {
+            questionId,
+            selectedOptionIndex,
+          };
+        }
+
+        return {
+          questionId,
+          writtenAnswer: answerValue,
+        };
+      }
+    ).filter(Boolean);
+  };
   return (
     <div className="testpage-container">
       <div className="testpage-header">

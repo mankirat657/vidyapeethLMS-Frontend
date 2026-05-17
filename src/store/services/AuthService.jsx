@@ -156,3 +156,15 @@ export const deleteTestApi = (testId) => {
         {withCredentials : true}
     )
 }
+export const startTestApi = (testId)=>{
+    return AxiosInstance.post(
+        `/admin/testAttempt/${testId}`,
+        {withCredentials : true}
+    )
+}
+export const validateTestApi = (testId, subjectId, data) => {
+  return AxiosInstance.post(
+    `/admin/validateTest/${testId}/${subjectId}`,
+    data
+  );
+};
