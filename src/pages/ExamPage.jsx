@@ -1,358 +1,485 @@
 import { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 
 const questions = [
-{
-id:1,
-type:"mcq",
-question:"React is developed by?",
-options:["Google","Facebook","Microsoft","Amazon"]
-},
-{
-id:2,
-type:"truefalse",
-question:"JavaScript is strongly typed."
-},
-{
-id:3,
-type:"short",
-question:"What is JSX?"
-},
-{
-id:4,
-type:"long",
-question:"Explain Virtual DOM."
-}
+  {
+    id: 1,
+    type: "mcq",
+    question: "React is developed by?",
+    options: [
+      "Google",
+      "Facebook",
+      "Microsoft",
+      "Amazon"
+    ]
+  },
+
+  {
+    id: 2,
+    type: "truefalse",
+    question: "JavaScript is strongly typed."
+  },
+
+  {
+    id: 3,
+    type: "short",
+    question: "What is JSX?"
+  },
+
+  {
+    id: 4,
+    type: "long",
+    question: "Explain Virtual DOM."
+  }
 ];
 
-export default function ExamPage(){
+export default function ExamPage() {
 
-const [current,setCurrent] = useState(0);
-const [answers,setAnswers] = useState({});
-const [review,setReview] = useState({});
-const [timeLeft,setTimeLeft] = useState(900);
+  const [current, setCurrent] = useState(0);
 
-const q = questions[current];
+  const [answers, setAnswers] = useState({});
 
-useEffect(()=>{
+  const [review, setReview] = useState({});
 
-const timer = setInterval(()=>{
+  const [timeLeft, setTimeLeft] = useState(900);
 
-setTimeLeft(t=>{
+  const q = questions[current];
+  const location = useLocation();
 
-if(t <= 1){
-clearInterval(timer);
-alert("Time is over. Test submitted automatically.");
-submitTest();
-return 0;
+const test = location.state?.test;
+
+  /* ======================================================
+     TIMER
+  ====================================================== */
+
+  useEffect(() => {
+
+    const timer = setInterval(() => {
+
+      setTimeLeft((t) => {
+
+        if (t <= 1) {
+
+          clearInterval(timer);
+
+          alert(
+            "Time is over. Test submitted automatically."
+          );
+
+          submitTest();
+
+          return 0;
+        }
+
+        return t - 1;
+      });
+
+    }, 1000);
+
+    return () => clearInterval(timer);
+
+  }, []);
+
+  /* ======================================================
+     ANSWERS
+  ====================================================== */
+
+  function handleAnswer(value) {
+
+    setAnswers((prev) => ({
+      ...prev,
+      [q.id]: value
+    }));
+  }
+
+ function clearResponse() {
+
+  setAnswers((prev) => {
+
+    const updated = { ...prev };
+
+    delete updated[q.id];
+
+    return updated;
+  });
+
+  // Remove review automatically
+
+  setReview((prev) => {
+
+    const updated = { ...prev };
+
+    delete updated[q.id];
+
+    return updated;
+  });
 }
 
-return t - 1;
+  function markReview() {
 
-});
+  // Cannot mark review without answer
 
-},1000);
+  if(!answers[q.id]){
 
-return ()=>clearInterval(timer);
+    alert(
+      "Please answer the question before marking for review."
+    );
 
-},[]);
+    return;
+  }
 
-useEffect(()=>{
-
-const timer = setInterval(()=>{
-
-setTimeLeft(t=>{
-
-if(t <= 1){
-clearInterval(timer);
-alert("Time is over. Test submitted automatically.");
-submitTest();
-return 0;
+  setReview((prev) => ({
+    ...prev,
+    [q.id]: !prev[q.id]
+  }));
 }
 
-return t - 1;
+  function goNext() {
 
-});
+    if (current < questions.length - 1) {
+      setCurrent(current + 1);
+    }
+  }
 
-},1000);
+  function goPrev() {
 
-return ()=>clearInterval(timer);
+    if (current > 0) {
+      setCurrent(current - 1);
+    }
+  }
 
-},[]);
+  function jump(index) {
+    setCurrent(index);
+  }
 
-function handleAnswer(value){
+  function submitTest() {
 
-setAnswers(prev => ({
-...prev,
-[q.id]: value
-}));
+    const unanswered = questions.filter(
+      (q) => !answers[q.id]
+    ).length;
 
-}
-
-function clearResponse(){
-
-setAnswers(prev => {
-const updated = {...prev};
-delete updated[q.id];
-return updated;
-});
-
-}
-
-function markReview(){
-
-setReview(prev => ({
-...prev,
-[q.id]: !prev[q.id]
-}));
-
-}
-
-function goNext(){
-
-if(current < questions.length - 1){
-setCurrent(current + 1);
-}
-
-}
-
-function goPrev(){
-
-if(current > 0){
-setCurrent(current - 1);
-}
-
-}
-
-function jump(index){
-setCurrent(index);
-}
-
-function submitTest(){
-
-const unanswered = questions.filter(q => !answers[q.id]).length;
-
-const confirmSubmit = window.confirm(
-`You still have ${unanswered} unanswered questions.
+    const confirmSubmit = window.confirm(
+      `You still have ${unanswered} unanswered questions.
 Are you sure you want to submit?`
-);
+    );
 
-if(confirmSubmit){
-alert("Test Submitted Successfully");
+    if (confirmSubmit) {
+      alert("Test Submitted Successfully");
+    }
+  }
+
+  /* ======================================================
+     QUESTION STATUS
+  ====================================================== */
+
+  function getStatus(id, index) {
+
+  if(index === current){
+    return "current";
+  }
+
+  if(review[id]){
+    return "review";
+  }
+
+  if(answers[id]){
+    return "answered";
+  }
+
+  if(index < current){
+    return "not-answered";
+  }
+
+  return "not-visited";
 }
 
-}
+  /* ======================================================
+     TIMER FORMAT
+  ====================================================== */
 
-function getStatus(id,index){
+  const minutes = Math.floor(timeLeft / 60);
 
-if(index === current) return "current";
+  const seconds = String(
+    timeLeft % 60
+  ).padStart(2, "0");
 
-if(review[id] && answers[id]) return "answered-review";
+  const timerDanger = timeLeft <= 300;
 
-if(review[id]) return "review";
+  return (
 
-if(answers[id]) return "answered";
+    <div className="exam-page">
 
-if(index < current) return "not-answered";
+      {/* HEADER */}
 
-return "not-visited";
+      <div className="exam-header">
 
-}
+        <div>
 
-return(
+          
 
-<div className="exam-page full-exam">
+          <h1>
+           <h1>
+  {test?.name || "Mock Test"}
+</h1>
+          </h1>
 
-{/* HEADER */}
+        </div>
 
-<div className="exam-header">
+        <div
+          className={
+            timerDanger
+              ? "timer danger-timer"
+              : "timer"
+          }
+        >
 
-<h2>Mock Test</h2>
+          {minutes}:{seconds}
 
-<div className="timer">
-{Math.floor(timeLeft/60)}:
-{String(timeLeft%60).padStart(2,'0')}
-</div>
+        </div>
 
-</div>
+      </div>
 
-{/* MAIN LAYOUT */}
+      {/* MAIN LAYOUT */}
 
-<div className="exam-layout">
+      <div className="exam-layout">
 
-{/* QUESTION AREA */}
+        {/* QUESTION AREA */}
 
-<div className="question-area">
+        <div className="question-area">
 
-<div className="question-content">
+          <div className="question-content">
 
-<h3>Question {current+1}</h3>
+            <div className="question-top">
 
-<p>{q.question}</p>
+              <p className="simple-question-number">
+                  Question {current + 1}
+              </p>
 
-<div className="options">
+              <span className="question-type">
+                {q.type.toUpperCase()}
+              </span>
 
-{/* MCQ */}
+            </div>
 
-{q.type === "mcq" && q.options.map(opt => (
+            <h2 className="question-text">
+              {q.question}
+            </h2>
 
-<label key={opt}>
+            {/* OPTIONS */}
 
-<input
-type="radio"
-checked={answers[q.id] === opt}
-onChange={()=>handleAnswer(opt)}
-/>
+            <div className="options-container">
 
-{opt}
+              {/* MCQ */}
 
-</label>
+              {q.type === "mcq" &&
+                q.options.map((opt) => (
 
-))}
+                <div
+                  key={opt}
+                  className={
+                    answers[q.id] === opt
+                      ? "option-card selected-option"
+                      : "option-card"
+                  }
+                  onClick={() =>
+                    handleAnswer(opt)
+                  }
+                >
 
-{/* TRUE FALSE */}
+                  <div className="option-radio"></div>
 
-{q.type === "truefalse" && (
+                  {opt}
 
-<>
+                </div>
 
-<label>
+              ))}
 
-<input
-type="radio"
-checked={answers[q.id] === "true"}
-onChange={()=>handleAnswer("true")}
-/>
+              {/* TRUE FALSE */}
 
-True
+              {q.type === "truefalse" && (
 
-</label>
+                <>
 
-<label>
+                  <div
+                    className={
+                      answers[q.id] === "true"
+                        ? "option-card selected-option"
+                        : "option-card"
+                    }
+                    onClick={() =>
+                      handleAnswer("true")
+                    }
+                  >
 
-<input
-type="radio"
-checked={answers[q.id] === "false"}
-onChange={()=>handleAnswer("false")}
-/>
+                    <div className="option-radio"></div>
 
-False
+                    True
+
+                  </div>
+
+                  <div
+                    className={
+                      answers[q.id] === "false"
+                        ? "option-card selected-option"
+                        : "option-card"
+                    }
+                    onClick={() =>
+                      handleAnswer("false")
+                    }
+                  >
 
-</label>
+                    <div className="option-radio"></div>
 
-</>
+                    False
 
-)}
+                  </div>
 
-{/* SHORT ANSWER */}
+                </>
 
-{q.type === "short" && (
+              )}
 
-<input
-className="short-answer"
-value={answers[q.id] || ""}
-onChange={(e)=>handleAnswer(e.target.value)}
-/>
+              {/* SHORT */}
 
-)}
+              {q.type === "short" && (
 
-{/* LONG ANSWER */}
+                <input
+                  className="modern-input"
+                  placeholder="Type your answer..."
+                  value={answers[q.id] || ""}
+                  onChange={(e) =>
+                    handleAnswer(
+                      e.target.value
+                    )
+                  }
+                />
 
-{q.type === "long" && (
+              )}
 
-<textarea
-className="long-answer"
-value={answers[q.id] || ""}
-onChange={(e)=>handleAnswer(e.target.value)}
-/>
+              {/* LONG */}
 
-)}
+              {q.type === "long" && (
 
-</div>
+                <textarea
+                  className="modern-textarea"
+                  placeholder="Write your answer..."
+                  value={answers[q.id] || ""}
+                  onChange={(e) =>
+                    handleAnswer(
+                      e.target.value
+                    )
+                  }
+                />
 
-</div>
+              )}
 
-{/* ACTION BUTTONS */}
+            </div>
 
-<div className="exam-actions">
+          </div>
 
-<button onClick={goPrev}>Previous</button>
+          {/* ACTIONS */}
 
-<button onClick={markReview}>
-{review[q.id] ? "Unmark Review" : "Mark for Review"}
-</button>
+          <div className="exam-actions">
 
-<button onClick={clearResponse}>
-Clear Response
-</button>
+            <button
+              className="exam-btn secondary-btn"
+              onClick={goPrev}
+            >
+              Previous
+            </button>
 
-<button onClick={goNext}>
-Next
-</button>
+            <button
+              className="exam-btn warning-btn"
+              onClick={markReview}
+            >
+              {review[q.id]
+                ? "Unmark Review"
+                : "Mark for Review"}
+            </button>
 
-<button className="submit-btn" onClick={submitTest}>
-Submit Test
-</button>
+            <button
+              className="exam-btn secondary-btn"
+              onClick={clearResponse}
+            >
+              Clear Response
+            </button>
 
-</div>
+            <button
+              className="exam-btn primary-btn"
+              onClick={goNext}
+            >
+              Next
+            </button>
 
-</div>
+            <button
+              className="exam-btn submit-btn"
+              onClick={submitTest}
+            >
+              Submit Test
+            </button>
 
-{/* QUESTION PALETTE */}
+          </div>
 
-<div className="palette">
+        </div>
 
-<h4>Questions</h4>
+        {/* QUESTION PALETTE */}
 
-<div className="palette-grid">
+        <div className="palette">
 
-{questions.map((q,index)=>(
+          <h3>
+            Question Palette
+          </h3>
 
-<div
-key={q.id}
-className={`p-number ${getStatus(q.id,index)}`}
-onClick={()=>jump(index)}
->
+          <div className="palette-grid">
 
-{index+1}
+            {questions.map((q, index) => (
 
-</div>
+              <div
+                key={q.id}
+                className={`p-number ${getStatus(
+                  q.id,
+                  index
+                )}`}
+                onClick={() => jump(index)}
+              >
 
-))}
+                {index + 1}
 
-</div>
+              </div>
 
-{/* LEGEND */}
+            ))}
 
-<div className="palette-legend">
+          </div>
 
-<div className="legend-item">
-<div className="legend-color legend-current"></div>
-Current
-</div>
+          {/* LEGEND */}
 
-<div className="legend-item">
-<div className="legend-color legend-answered"></div>
-Answered
-</div>
+          <div className="palette-legend">
 
-<div className="legend-item">
-<div className="legend-color legend-review"></div>
-Review
-</div>
+            <div className="legend-pill">
+              <span className="legend-dot current-dot"></span>
+              Current
+            </div>
 
-<div className="legend-item">
-<div className="legend-color legend-unvisited"></div>
-Not Visited
-</div>
+            <div className="legend-pill">
+              <span className="legend-dot answered-dot"></span>
+              Answered
+            </div>
 
-</div>
+            <div className="legend-pill">
+              <span className="legend-dot review-dot"></span>
+              Review
+            </div>
 
-</div>
+            <div className="legend-pill">
+              <span className="legend-dot unvisited-dot"></span>
+              Unvisited
+            </div>
 
-</div>
+          </div>
 
-</div>
+        </div>
 
-);
+      </div>
 
+    </div>
+  );
 }

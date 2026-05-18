@@ -47,7 +47,11 @@ function TestInstructions() {
 
         {/* Instructions */}
 
-        <div className="instructions-section">
+        <div className="instructions-scroll">
+
+{/* Instructions */}
+
+<div className="instructions-section">
 
           <h2>Instructions</h2>
 
@@ -115,6 +119,8 @@ function TestInstructions() {
 
         {/* Agreement */}
 
+        </div>
+
         <div className="agree-section">
 
           <label className="agree-checkbox">
@@ -133,12 +139,16 @@ function TestInstructions() {
           </label>
 
           <button
-            className="agree-btn"
-            disabled={!agreed}
-            onClick={() => navigate("/student/exam")}
-          >
-            Agree & Continue
-          </button>
+  className="agree-btn"
+  disabled={!agreed}
+  onClick={() =>
+    navigate("/student/exam", {
+      state: { test }
+    })
+  }
+>
+  Agree & Continue
+</button>
 
         </div>
 

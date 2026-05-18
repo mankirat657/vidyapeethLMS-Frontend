@@ -1,6 +1,9 @@
 export const MOCK_STUDENT = {
-  _id: "mock_student_001",
   name: "Dev Student",
-  email: "dev@vidyapeeth.com",
+  email: "student@test.com",
   role: "student",
+
+  gender: "Male",
+
+  profileImage: null
 };
