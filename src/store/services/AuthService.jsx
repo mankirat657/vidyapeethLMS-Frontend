@@ -168,3 +168,15 @@ export const validateTestApi = (testId, subjectId, data) => {
     data
   );
 };
+export const getResultApi = (stuId,subjectId,testId) => {
+    return AxiosInstance.get(
+        `/getResult/${stuId}/${subjectId}/${testId}`,
+        {withCredentials : true}
+    )
+}
+export const getTestResultApi = (testId) => {
+    return AxiosInstance.get(
+        `/admin/studentResult/${testId}`,
+        {withCredentials : true}
+    )
+}

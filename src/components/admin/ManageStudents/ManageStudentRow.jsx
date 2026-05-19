@@ -9,13 +9,12 @@ function ManageStudentRow({stuId, student, onDelete, onOpen }) {
   const[isBlocked,setIsBlocked] = useState(false);
   const[isUnblocked,setIsUnblocked] = useState(false);
   const toggleBlock = (e) => {
-    e.stopPropagation(); // prevents row click
+    e.stopPropagation(); 
 
   };
 
   const handleDelete = (e) => {
-    e.stopPropagation(); // prevents row click
-
+    e.stopPropagation(); 
     const confirmDelete = window.confirm(
       `Are you sure you want to delete ${student.name}?`
     );
@@ -32,7 +31,6 @@ function ManageStudentRow({stuId, student, onDelete, onOpen }) {
       onClick={() => onOpen(student)}
     >
 
-      {/* NAME */}
       <div className="student-name">
         <div className="avatar"><img
           src={student?.picture}

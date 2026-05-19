@@ -2499,6 +2499,8 @@ box-shadow:0 15px 35px rgba(0,0,0,0.15);
   border-radius: 18px;
   padding: 20px;
   border: 1px solid #eef1f6;
+  height: 23vh;
+  overflow-y: auto;
   box-shadow: 0 10px 28px rgba(0, 0, 0, 0.05);
 }
 
@@ -2576,6 +2578,9 @@ box-shadow:0 15px 35px rgba(0,0,0,0.15);
   display: flex;
   flex-direction: column;
   gap: 15px;
+  height: 25vh;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .admin-results-top3 h3 {
@@ -2602,7 +2607,6 @@ box-shadow:0 15px 35px rgba(0,0,0,0.15);
   transform: translateY(-3px);
 }
 
-/* Rank circle */
 .top-rank {
   width: 26px;
   height: 26px;
@@ -2627,10 +2631,10 @@ box-shadow:0 15px 35px rgba(0,0,0,0.15);
   width: 36px;
   height: 36px;
   border-radius: 50%;
+  overflow: hidden;
   background: linear-gradient(135deg, #4f7cff, #6fa4ff);
 }
 
-/* Text */
 .top-name {
   font-size: 14px;
   font-weight: 600;
@@ -2642,13 +2646,11 @@ box-shadow:0 15px 35px rgba(0,0,0,0.15);
   color: #64748b;
 }
 
-/* Trend */
 .trend {
   font-size: 16px;
   color: #22c55e;
 }
 
-/* 🎨 Color Variants */
 .admin-top-card.blue {
   border-left: 4px solid #4f7cff;
 }
@@ -3619,7 +3621,10 @@ box-shadow:0 15px 35px rgba(0,0,0,0.15);
 .students-table {
   background: white;
   border-radius: 14px;
-  overflow: hidden;
+  
+  height: 30vh;
+  overflow-y: auto;
+
 }
 
 .table-header,
@@ -3627,6 +3632,7 @@ box-shadow:0 15px 35px rgba(0,0,0,0.15);
   display: grid;
   grid-template-columns: repeat(7, 1fr);
   padding: 14px;
+  
 }
 
 .table-header {
@@ -4674,4 +4680,114 @@ box-shadow:0 15px 35px rgba(0,0,0,0.15);
 
 .download-btn:hover {
   background: #1d4ed8;
+}
+/* Status Breakdown */
+.admin-status-breakdown {
+  background: white;
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.status-title {
+  font-size: 18px;
+  margin-bottom: 16px;
+  color: #1f2937;
+}
+
+.status-chart-container {
+  height: 200px;
+}
+
+.status-legend {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  margin-top: 16px;
+  flex-wrap: wrap;
+}
+
+.status-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+}
+
+.status-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+
+.status-dot.submitted { background: #22c55e; }
+.status-dot.cheated { background: #ef4444; }
+.status-dot.auto-submitted { background: #f59e0b; }
+.status-dot.late-submission { background: #8b5cf6; }
+
+/* Student List */
+.admin-student-list {
+  background: white;
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.student-list-title {
+  font-size: 18px;
+  margin-bottom: 16px;
+  color: #1f2937;
+}
+
+.student-table {
+  overflow-x: auto;
+}
+
+.student-table-header,
+.student-table-row {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr 1.5fr;
+  padding: 12px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.student-table-header {
+  background: #f9fafb;
+  font-weight: 600;
+  border-radius: 8px;
+}
+
+.status-badge {
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  width: fit-content;
+}
+
+.status-badge.status-submitted {
+  background: #dcfce7;
+  color: #16a34a;
+}
+
+.status-badge.status-cheated {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+.status-badge.status-auto {
+  background: #fef3c7;
+  color: #d97706;
+}
+
+.status-badge.status-late {
+  background: #f3e8ff;
+  color: #9333ea;
+}
+
+.status-badge.status-attempted {
+  background: #dbeafe;
+  color: #2563eb;
 }
